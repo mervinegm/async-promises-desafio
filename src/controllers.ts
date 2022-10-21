@@ -7,9 +7,11 @@ export class ContactsControllerOptions {
 
 class ContactsController {
   contacts: ContactsCollection;
+  promesa: Promise<any>;
   constructor() {
     this.contacts = new ContactsCollection();
-    this.contacts.load();
+    const promesa = this.contacts.load();
+    this.promesa = promesa;
   }
   processOptions(options: ContactsControllerOptions) {
     var resultado;
@@ -19,7 +21,10 @@ class ContactsController {
       resultado = this.contacts.getAll();
     } else if (options.action == "save" && options.params) {
       this.contacts.addOne(options.params);
-      this.contacts.save();
+      const promesa = this.contacts.save();
+      resultado = promesa.then((res) => {
+        return res;
+      });
     }
     return resultado;
   }
